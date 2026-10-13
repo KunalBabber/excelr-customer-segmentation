@@ -1,29 +1,27 @@
-# ExcelR Customer Segmentation Dashboard
+# ExcelR Customer Segmentation — Modular Streamlit App
 
-Interactive Streamlit version of the ExcelR customer segmentation notebook. Supports five clustering algorithms: K-Means, Agglomerative, Gaussian Mixture Model, BIRCH, DBSCAN. Evaluates using Silhouette, Davies-Bouldin and Calinski-Harabasz indices. Includes PCA, segment profiling and CSV export.
+The original notebook is preserved locally but excluded from the public repository because its saved outputs contain customer-row previews. The web app has a **small `app.py`**; all preprocessing, model training, metrics and visualizations live in `src/`.
+
+## Structure
+- `app.py` — Streamlit entrypoint and navigation
+- `src/pipeline.py` — notebook-aligned feature engineering, IQR capping, scaling
+- `src/models.py` — five clustering models and three internal validation metrics
+- `src/views.py` — Streamlit charts, tables, downloads
+- `marketing_campaign.xlsx` — local example dataset, not committed
+- `ExcelR_Customer_Segmentation_5_Models_Evaluation_REVISED.ipynb` — local analysis notebook, not committed because saved outputs include customer-row previews
+- `requirements.txt` — runtime dependencies
 
 ## Run locally
-
 ```bash
 pip install -r requirements.txt
 streamlit run app.py
 ```
 
-## Deploy free using Streamlit Community Cloud
+## Deploy to Streamlit Community Cloud
+1. Create a GitHub repository and upload the project files **preserving `src/` structure**.
+2. Open https://share.streamlit.io and sign in.
+3. Select the repository, branch, and main file path `app.py`.
+4. Click Deploy. Keep the repository public only if you are authorized to publish the dataset.
 
-1. Create a GitHub repository and upload `app.py`, `requirements.txt`, and optionally `marketing_campaign.xlsx`.
-2. Visit https://share.streamlit.io and sign in using GitHub.
-3. Select your repository and branch, set the main file path to `app.py`, and deploy.
-4. If you did not include the example dataset, upload your Excel/CSV dataset inside the app.
-
-## Data privacy
-
-The bundled dataset is an example from the project. **Before making the GitHub repository public**, confirm you have permission to publish its customer data. You can omit the `.xlsx` file and use the upload control instead. Avoid uploading confidential customer records to a public hosted app.
-
-## Notes
-
-- Uses 2026 as the default age reference year, consistent with the original notebook; configurable in the sidebar.
-- Outlier capping applies to selected modeling features, not identifiers. Original notebook capped every numeric column; this avoids altering IDs and years.
-- Profiles show engineered values after optional outlier capping, not standardized units.
-- DBSCAN can produce only one cluster or all noise; evaluation metrics then show N/A.
-- The model with highest silhouette is highlighted, but this is not a guarantee of business suitability.
+## Important
+The notebook hardcodes project year **2026** for Age and uses **3 clusters** for K-Means, Agglomerative, GMM and BIRCH. DBSCAN uses `eps=1.8` and `min_samples=10`. The app mirrors these choices. DBSCAN may yield one/no valid cluster; its internal metrics will then be undefined. The app is not a live hosted deployment until connected to your own GitHub/Streamlit account.
